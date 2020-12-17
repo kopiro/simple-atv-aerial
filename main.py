@@ -68,7 +68,7 @@ def main():
         print("Please configure your MPLAYER environment variable")
         exit()
 
-    if sys.argv[1] == '--download':
+    if len(sys.argv) >= 2 and sys.argv[1] == '--download':
         download_library()
         return
 
