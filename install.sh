@@ -1,2 +1,2 @@
 #!/bin/bash
-ln -svf "$(pwd)/main.py" /usr/local/bin/simple-atv-aerial
+cp -f main.py /usr/local/bin/simple-atv-aerial
