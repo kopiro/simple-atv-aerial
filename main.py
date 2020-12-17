@@ -56,7 +56,7 @@ def download_library():
                 download_video(video)
 
 
-def routine(videos):
+def routine():
     while True:
         videos = load_videos()
         video = random.choice(videos)
