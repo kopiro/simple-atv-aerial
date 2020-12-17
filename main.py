@@ -74,6 +74,11 @@ def download_library():
 def routine():
     while True:
         files = load_videos()
+        if len(files) == 0:
+            print(
+                "No videos downloaded, use 'simple-atv-aerial --download' to download some content")
+            exit()
+
         file = random.choice(files)
         play_video(file)
 
