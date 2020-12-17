@@ -13,6 +13,7 @@ For Raspberry PI, I recommend the default `omxplayer`.
 ```sh
 git clone https://github.com/kopiro/simple-atv-aerial.git
 cd simple-atv-aerial
+./install.sh
 ```
 
 ### first download
@@ -22,11 +23,11 @@ You want to download the videos before running it for the first time.
 You can stop the script anytime if you want to test it before:
 
 ```sh
-./main.py --download
+simple-atv-aerial --download
 ```
 
 ### launch
 
 ```sh
-./main.py
+simple-atv-aerial
 ```
