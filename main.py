@@ -70,7 +70,7 @@ def routine(videos):
             download_file(next_video["url"], get_local_file(next_video), True)
 
         # Show the video
-        subprocess.call([os.getenv('MPLAYER'), "--fullscreen", local_file])
+        subprocess.call([os.getenv('MPLAYER'), local_file])
 
 
 def main():
