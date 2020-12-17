@@ -6,8 +6,9 @@ import random
 import os
 import sys
 
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 LIBRARY_URL = "http://a1.phobos.apple.com/us/r1000/000/Features/atv/AutumnResources/videos/entries.json"
-CACHE_DIR = "./cache"
+CACHE_DIR = os.path.join(SCRIPT_DIR, "cache")
 DAY_TIME = 4
 NIGHT_TIME = 19
 
