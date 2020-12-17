@@ -5,10 +5,12 @@ from datetime import datetime
 import random
 import os
 import sys
+from pathlib import Path
+import errno
 
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+HOME = str(Path.home())
 LIBRARY_URL = "http://a1.phobos.apple.com/us/r1000/000/Features/atv/AutumnResources/videos/entries.json"
-CACHE_DIR = os.path.join(SCRIPT_DIR, "cache")
+CACHE_DIR = os.path.join(HOME, ".simple-atv-aerial")
 DAY_TIME = 4
 NIGHT_TIME = 19
 
@@ -42,13 +44,26 @@ def download_file(url, file):
 
 def download_video(video):
     local_file = get_local_file(video)
+    try:
+        os.makedirs(os.path.dirname(local_file), 0o755)
+    except OSError as exc:
+        if exc.errno != errno.EEXIST:
+            raise
+        pass
     if not os.path.isfile(local_file):
         return download_file(video["url"], local_file)
 
 
 def download_library():
+    try:
+        os.makedirs(CACHE_DIR, 0o755)
+    except OSError as exc:
+        if exc.errno != errno.EEXIST:
+            raise
+        pass
     lib_file = os.path.join(CACHE_DIR, "library.json")
     download_file(LIBRARY_URL, lib_file)
+
     with open(lib_file) as json_file:
         data = json.load(json_file)
         for vid_group in data:
