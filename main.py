@@ -12,7 +12,7 @@ NIGHT_TIME = 19
 
 
 def download_file(url, file, defer=False):
-    cmd = ["curl", "-s", url, "-o", file]
+    cmd = ["curl", url, "-o", file]
     if defer:
         print(f"Pre-downloading {url} in {file}...")
         subprocess.Popen(cmd)
