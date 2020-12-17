@@ -24,8 +24,7 @@ def get_local_file(video):
     return os.path.join(CACHE_DIR, video['timeOfDay'], f"{video['id']}.mov")
 
 
-def play_video(video):
-    file = get_local_file(video)
+def play_video(file):
     player = os.getenv('MPLAYER')
     if player == "omxplayer":
         subprocess.call([player, file])
@@ -58,9 +57,9 @@ def download_library():
 
 def routine():
     while True:
-        videos = load_videos()
-        video = random.choice(videos)
-        play_video(video)
+        files = load_videos()
+        file = random.choice(files)
+        play_video(file)
 
 
 def main():
