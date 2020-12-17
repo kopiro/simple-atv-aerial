@@ -15,6 +15,16 @@ git clone https://github.com/kopiro/simple-atv-aerial.git
 cd simple-atv-aerial
 ```
 
+### first download
+
+You want to download the videos before running it for the first time.
+
+You can stop the script anytime if you want to test it before:
+
+```sh
+./main.py --download
+```
+
 ### launch
 
 ```sh
