@@ -3,8 +3,6 @@ import json
 import subprocess
 from datetime import datetime
 import random
-import requests
-import shutil
 import os
 
 LIBRARY_URL = "http://a1.phobos.apple.com/us/r1000/000/Features/atv/AutumnResources/videos/entries.json"
@@ -13,12 +11,14 @@ DAY_TIME = 4
 NIGHT_TIME = 19
 
 
-def download_file(url, file):
-    print(f"Downloading {url} in {file}...")
-    with requests.get(url, stream=True) as r:
-        with open(file, 'wb') as f:
-            shutil.copyfileobj(r.raw, f, 16*1024*1024)
-    return file
+def download_file(url, file, defer=False):
+    cmd = ["curl", "-s", url, "-o", file]
+    if defer:
+        print(f"Pre-downloading {url} in {file}...")
+        subprocess.Popen(cmd)
+    else:
+        print(f"Downloading {url} in {file}...")
+        subprocess.run(cmd)
 
 
 def download_library():
@@ -36,18 +36,41 @@ def load_videos():
         return videos
 
 
-def routine(videos):
+def get_next_video_after(videos, fromIndex):
+    index = fromIndex
     while True:
-        for video in videos:
-            now = datetime.now()
-            now_time_of_day = ("day" if now.hour <
-                               NIGHT_TIME and now.hour > DAY_TIME else "night")
-            local_file = f"{CACHE_DIR}/{video['id']}.mov"
-            time_of_day = video["timeOfDay"]
-            if time_of_day == now_time_of_day:
-                if not os.path.isfile(local_file):
-                    download_file(video["url"], local_file)
-                subprocess.call([os.getenv('MPLAYER'), local_file])
+        index = (index + 1) % len(videos)
+        video = videos[index]
+        now = datetime.now()
+        now_time_of_day = ("day" if now.hour <
+                           NIGHT_TIME and now.hour > DAY_TIME else "night")
+        time_of_day = video["timeOfDay"]
+        if time_of_day == now_time_of_day:
+            return video
+        if index == fromIndex:
+            return None
+
+
+def get_local_file(video):
+    return f"{CACHE_DIR}/{video['id']}.mov"
+
+
+def routine(videos):
+    index = len(videos) - 1
+    while True:
+        video = get_next_video_after(videos, index)
+        local_file = get_local_file(video)
+        if not os.path.isfile(local_file):
+            download_file(video["url"], local_file)
+
+        # Download next video defer
+        next_video = get_next_video_after(videos, index)
+        next_local_file = get_local_file(next_video)
+        if not os.path.isfile(next_local_file):
+            download_file(next_video["url"], get_local_file(next_video), True)
+
+        # Show the video
+        subprocess.call([os.getenv('MPLAYER'), "--fullscreen", local_file])
 
 
 def main():
